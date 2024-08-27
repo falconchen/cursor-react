@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
 import NoteList from './components/NoteList';
 import AddButton from './components/AddButton';
@@ -9,16 +9,16 @@ function App() {
   return (
     <Router>
       <div className="container">
-        <Switch>
-          <Route exact path="/">
-            <Header />
-            <NoteList />
-            <AddButton />
-          </Route>
-          <Route path="/detail">
-            <NoteDetail />
-          </Route>
-        </Switch>
+        <Routes>
+          <Route path="/" element={
+            <>
+              <Header />
+              <NoteList />
+              <AddButton />
+            </>
+          } />
+          <Route path="/detail" element={<NoteDetail />} />
+        </Routes>
       </div>
     </Router>
   );

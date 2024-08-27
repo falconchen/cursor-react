@@ -1,14 +1,14 @@
 import React, { useEffect, useRef } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function NoteItem({ note }) {
   const qrRef = useRef(null);
-  const history = useHistory();
+  const navigate = useNavigate();
   const handleClick = () => {
-    history.push('/detail');
+    navigate('/detail');
   };
   useEffect(() => {
-    if (note.hasQR && qrRef.current) {
+    if (note.hasQR && qrRef.current && !qrRef.current.hasChildNodes()) {
       const canvas = document.createElement('canvas');
       canvas.width = 60;
       canvas.height = 60;
