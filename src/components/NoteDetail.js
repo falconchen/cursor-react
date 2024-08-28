@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 // import markerIcon from '../images/markerDefault.png'; // 导入图片
 
@@ -9,22 +9,10 @@ function NoteDetail() {
   const [location, setLocation] = useState('正在获取位置...');
   const mapRef = useRef(null);
   const imageUploadRef = useRef(null);
-  const [map, setMap] = useState(null);
+  // const [map, setMap] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
 
-  useEffect(() => {
-    if (!window.TMap) {
-      const script = document.createElement('script');
-      script.src = 'https://map.qq.com/api/gljs?v=1.exp&key=WXJBZ-2IS35-GPRIZ-QMI4R-4S6G2-SDBZQ';
-      script.async = true;
-      script.onload = initMap;
-      document.body.appendChild(script);
-    } else {
-      initMap();
-    }
-  }, []);
-
-  const initMap = () => {
+  const initMap = useCallback(() => {
     if (!mapRef.current) return;
 
     const newMap = new window.TMap.Map(mapRef.current, {      
@@ -33,7 +21,6 @@ function NoteDetail() {
       pitch: 0, // 俯仰度
       rotation: 0, // 旋转角度
     });
-    setMap(newMap);
 
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
@@ -50,20 +37,30 @@ function NoteDetail() {
     } else {
       setLocation('不支持地理定位');
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (!window.TMap) {
+      const script = document.createElement('script');
+      script.src = 'https://map.qq.com/api/gljs?v=1.exp&key=WXJBZ-2IS35-GPRIZ-QMI4R-4S6G2-SDBZQ';
+      script.async = true;
+      script.onload = initMap;
+      document.body.appendChild(script);
+    } else {
+      initMap();
+    }
+  }, [initMap]);
 
   const updateMapPosition = (mapInstance, lat, lng) => {
-    
     const position = new window.TMap.LatLng(lat, lng);
     mapInstance.setCenter(position);
-    
-      // 添加检查
+
+    // 添加检查
     console.log('mapInstance 是 TMap.Map 的实例:', mapInstance instanceof window.TMap.Map);
     console.log('mapInstance:', mapInstance);
 
     new window.TMap.MultiMarker({
       map: mapInstance,
-      
       styles: {
         "marker": new window.TMap.MarkerStyle({
           "width": 25,
@@ -99,7 +96,6 @@ function NoteDetail() {
     navigate('/');
   };
 
-  
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
