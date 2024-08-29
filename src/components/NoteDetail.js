@@ -1,16 +1,19 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 // import markerIcon from '../images/markerDefault.png'; // 导入图片
 
 function NoteDetail() {
   const navigate = useNavigate();
+  const { mode } = useParams();
   const [note, setNote] = useState('');
   const [locationNote, setLocationNote] = useState('');
   const [location, setLocation] = useState('正在获取位置...');
   const mapRef = useRef(null);
   const imageUploadRef = useRef(null);
   // const [map, setMap] = useState(null);
-  const [previewImage, setPreviewImage] = useState(null);
+  const [previewImages, setPreviewImages] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [dragStart, setDragStart] = useState(null);
 
   const initMap = useCallback(() => {
     if (!mapRef.current) return;
@@ -20,6 +23,8 @@ function NoteDetail() {
       zoom:15,   //设置地图缩放级别            
       pitch: 0, // 俯仰度
       rotation: 0, // 旋转角度
+      draggable: true, // 允许用户拖动地图
+      scrollwheel: true // 允许户使用滚轮缩放地图
     });
 
     if ("geolocation" in navigator) {
@@ -37,6 +42,35 @@ function NoteDetail() {
     } else {
       setLocation('不支持地理定位');
     }
+
+    // 添加标记
+    const marker = new window.TMap.MultiMarker({
+      map: newMap,
+      styles: {
+        "marker": new window.TMap.MarkerStyle({
+          "width": 25,
+          "height": 35,
+          "anchor": { x: 16, y: 32 },
+          // "src": markerIcon // 使用导入的本地图片
+        })
+      },
+      geometries: [{
+        "id": "1",
+        "styleId": "marker",
+        "position": newMap.getCenter(),
+        "properties": {
+          "title": "当前位置"
+        }
+      }]
+    });
+
+    // 允许用户拖动标记
+    marker.on("dragend", (e) => {
+      const position = e.geometry.position;
+      newMap.setCenter(position);
+      setLocation(`纬度: ${position.lat.toFixed(6)}, 经度: ${position.lng.toFixed(6)}`);
+    });
+
   }, []);
 
   useEffect(() => {
@@ -56,8 +90,8 @@ function NoteDetail() {
     mapInstance.setCenter(position);
 
     // 添加检查
-    console.log('mapInstance 是 TMap.Map 的实例:', mapInstance instanceof window.TMap.Map);
-    console.log('mapInstance:', mapInstance);
+    // console.log('mapInstance 是 TMap.Map 的实例:', mapInstance instanceof window.TMap.Map);
+    // console.log('mapInstance:', mapInstance);
 
     new window.TMap.MultiMarker({
       map: mapInstance,
@@ -81,7 +115,7 @@ function NoteDetail() {
   };
 
   const handleBack = () => {
-    navigate(-1);
+    navigate('/');
   };
 
   const handleDelete = () => {
@@ -97,14 +131,88 @@ function NoteDetail() {
   };
 
   const handleImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
+    const files = event.target.files;
+    const uploadedImages = [];
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
       const reader = new FileReader();
-      reader.onload = function(e) {
-        setPreviewImage(e.target.result);
-        imageUploadRef.current.querySelector('.image-upload-text').textContent = file.name;
-      }
+
+      reader.onload = function (e) {
+        uploadedImages.push(e.target.result);
+        if (uploadedImages.length === files.length) {
+          setPreviewImages([...previewImages, ...uploadedImages]);
+        }
+      };
+
       reader.readAsDataURL(file);
+    }
+  };
+
+  const handleImageClick = (image, index) => {
+    setSelectedImage({ image, index });
+  };
+
+  const handleCloseViewer = () => {
+    setSelectedImage(null);
+  };
+
+  const handlePrevImage = (event) => {
+    event.stopPropagation();
+    if (selectedImage.index > 0) {
+      setSelectedImage({
+        image: previewImages[selectedImage.index - 1],
+        index: selectedImage.index - 1,
+      });
+    } else {
+      setSelectedImage({
+        image: previewImages[previewImages.length - 1],
+        index: previewImages.length - 1,
+      });
+    }
+  };
+
+  const handleNextImage = (event) => {
+    event.stopPropagation();
+    if (selectedImage.index < previewImages.length - 1) {
+      setSelectedImage({
+        image: previewImages[selectedImage.index + 1],
+        index: selectedImage.index + 1,
+      });
+    } else {
+      setSelectedImage({
+        image: previewImages[0],
+        index: 0,
+      });
+    }
+  };
+
+  const handleDragStart = (event) => {
+    setDragStart(event.clientX);
+  };
+
+  const handleDragEnd = (event) => {
+    const dragEnd = event.clientX;
+    if (dragEnd - dragStart > 50) {
+      handlePrevImage();
+    } else if (dragStart - dragEnd > 50) {
+      handleNextImage();
+    }
+    setDragStart(null);
+  };
+
+  const handleRemoveImage = (index) => {
+    const updatedImages = [...previewImages];
+    updatedImages.splice(index, 1);
+    setPreviewImages(updatedImages);
+
+    if (selectedImage && selectedImage.index === index) {
+      setSelectedImage(null);
+    } else if (selectedImage && selectedImage.index > index) {
+      setSelectedImage({
+        image: selectedImage.image,
+        index: selectedImage.index - 1,
+      });
     }
   };
 
@@ -114,7 +222,7 @@ function NoteDetail() {
         <svg className="icon" viewBox="0 0 24 24" fill="#333" onClick={handleBack}>
           <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
         </svg>
-        <span className="header-title">编辑笔记</span>
+        <span className="header-title">{mode === 'add' ? '添加笔记' : '编辑笔记'}</span>
         <div className="header-actions">
           <svg className="icon" viewBox="0 0 24 24" fill="#333" onClick={handleDelete}>
             <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
@@ -141,9 +249,46 @@ function NoteDetail() {
           <input type="file" id="imageUpload" accept="image/*" onChange={handleImageUpload} style={{display: 'none'}} />
         </div>
         
-        {previewImage && (
+        {previewImages.length > 0 && (
           <div className="image-preview-section">
-            <img src={previewImage} alt="预览图片" className="preview-image" />
+            {previewImages.map((image, index) => (
+              <div
+                key={index}
+                className="image-container"
+                onClick={() => handleImageClick(image, index)}
+              >
+                <img src={image} alt={`预览图片 ${index + 1}`} className="preview-image" />
+                <div className="image-remove" onClick={(event) => {
+                  event.stopPropagation();
+                  handleRemoveImage(index);
+                }}>
+                  &times;
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        
+        {selectedImage && (
+          <div className="image-viewer" onClick={handleCloseViewer}>
+            <img
+              src={selectedImage.image}
+              alt="放大的图片"
+              className="viewer-image"
+              draggable="false"
+              onDragStart={handleDragStart}
+              onDragEnd={handleDragEnd}
+              onClick={(event) => event.stopPropagation()}
+            />
+            <svg className="prev-arrow" viewBox="0 0 24 24" onClick={handlePrevImage}>
+              <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+            </svg>
+            <svg className="next-arrow" viewBox="0 0 24 24" onClick={handleNextImage}>
+              <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+            </svg>
+            <div className="close-viewer" onClick={handleCloseViewer}>
+              &times;
+            </div>
           </div>
         )}
         

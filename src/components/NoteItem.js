@@ -5,7 +5,7 @@ function NoteItem({ note }) {
   const qrRef = useRef(null);
   const navigate = useNavigate();
   const handleClick = () => {
-    navigate('/detail');
+    navigate('/detail/edit');
   };
   useEffect(() => {
     if (note.hasQR && qrRef.current && !qrRef.current.hasChildNodes()) {

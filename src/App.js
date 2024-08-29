@@ -17,7 +17,7 @@ function App() {
               <AddButton />
             </>
           } />
-          <Route path="/detail" element={<NoteDetail />} />
+          <Route path="/detail/:mode" element={<NoteDetail />} />
         </Routes>
       </div>
     </Router>

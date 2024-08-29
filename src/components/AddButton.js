@@ -6,7 +6,7 @@ function AddButton() {
     const navigate = useNavigate();
 
     const handleClick = () => {
-      navigate('/detail');
+      navigate('/detail/add');
     };
   
 
