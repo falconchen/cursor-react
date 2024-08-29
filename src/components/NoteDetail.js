@@ -24,7 +24,7 @@ function NoteDetail() {
       pitch: 0, // 俯仰度
       rotation: 0, // 旋转角度
       draggable: true, // 允许用户拖动地图
-      scrollwheel: true // 允许户使用滚轮缩放地图
+      scrollwheel: true // 允许���使用滚缩放地图
     });
 
     if ("geolocation" in navigator) {
@@ -280,12 +280,12 @@ function NoteDetail() {
               onDragEnd={handleDragEnd}
               onClick={(event) => event.stopPropagation()}
             />
-            <svg className="prev-arrow" viewBox="0 0 24 24" onClick={handlePrevImage}>
-              <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
-            </svg>
-            <svg className="next-arrow" viewBox="0 0 24 24" onClick={handleNextImage}>
-              <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
-            </svg>
+            {previewImages.length > 1 && (
+              <>
+                <div className="prev-arrow" onClick={handlePrevImage}></div>
+                <div className="next-arrow" onClick={handleNextImage}></div>
+              </>
+            )}
             <div className="close-viewer" onClick={handleCloseViewer}>
               &times;
             </div>

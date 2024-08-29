@@ -15,6 +15,7 @@ body {
     box-sizing: border-box;  
 }
 #root{
+    background-color: #F9E3E0;
     /* height: 100%; */
 }
 .container {
@@ -188,7 +189,7 @@ header {
     position: relative;
     border-radius: 4px;
     cursor: pointer;
-    border: 2px solid #F9776F;
+    border: 2px solid #F9E3E0;
     overflow: visible;
 }
 
@@ -252,16 +253,19 @@ header {
     transform: translateY(-50%);
     width: 40px;
     height: 40px;
-    fill: white;
     cursor: pointer;
     user-select: none;
-    opacity: 0.6;
-    transition: opacity 0.2s;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.2s;
 }
 
 .prev-arrow:hover,
 .next-arrow:hover {
-    opacity: 1;
+    background-color: rgba(249, 119, 111, 0.8);
 }
 
 .prev-arrow {
@@ -272,22 +276,24 @@ header {
     right: 20px;
 }
 
-@keyframes fade-in {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+.prev-arrow::before,
+.next-arrow::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border-top: 2px solid white;
+    border-right: 2px solid white;
+    display: block;
 }
 
-@keyframes zoom-in {
-    from {
-        transform: scale(0.8);
-    }
-    to {
-        transform: scale(1);
-    }
+.prev-arrow::before {
+    transform: rotate(-135deg);
+    margin-left: 4px;
+}
+
+.next-arrow::before {
+    transform: rotate(45deg);
+    margin-right: 4px;
 }
 
 .close-viewer {
@@ -348,4 +354,22 @@ header {
 .overlay.active {
     opacity: 1;
     visibility: visible;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes zoom-in {
+    from {
+        transform: scale(0.8);
+    }
+    to {
+        transform: scale(1);
+    }
 }
