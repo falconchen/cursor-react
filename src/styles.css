@@ -20,6 +20,8 @@ body, html {
     display: flex;
     flex-direction: column;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
 }
 header {
     background-color: #F9E3E0;
@@ -291,4 +293,54 @@ header {
     color: white;
     cursor: pointer;
     user-select: none;
+}
+
+.settings-menu {
+    position: absolute;
+    top: 0;
+    right: -300px;
+    width: 300px;
+    height: 100%;
+    background-color: white;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+    transition: right 0.3s ease-in-out;
+    z-index: 20;
+}
+.settings-menu.active {
+    right: 0;
+}
+.settings-header {
+    background-color: #F9E3E0;
+    padding: 15px 20px;
+    font-size: 18px;
+    font-weight: bold;
+}
+.settings-list {
+    padding: 20px;
+}
+.settings-item {
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.settings-item:last-child {
+    border-bottom: none;
+}
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out;
+    z-index: 15;
+}
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
 }
