@@ -31,6 +31,7 @@ body {
 }
 header {
     background-color: #F9E3E0;
+    padding-top: env(safe-area-inset-top);
     padding: 15px 20px;
     display: flex;
     justify-content: space-between;
