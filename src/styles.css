@@ -16,7 +16,7 @@ body {
 }
 #root {
     background-color: aliceblue;
-    background-image: url(../public/images/wood.jpg);
+    background-image: url(images/wood.jpg);
     background-attachment: scroll;
     background-clip: border-box;
     background-origin: padding-box;
