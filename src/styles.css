@@ -343,10 +343,60 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    cursor: pointer;
 }
+
+.settings-item:hover {
+    color: #999;
+}
+
 .settings-item:last-child {
     border-bottom: none;
 }
+
+.settings-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+a.settings-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    color: #333;
+    text-decoration: none;
+}
+
+a.settings-item:hover {
+    color: #999;
+}
+
+a.settings-item span {
+    flex-grow: 1;
+}
+
+/* a.settings-item svg {
+    fill: #F9776F;
+} */
+
+.settings-item.github-login {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.settings-item.github-login span {
+    flex-grow: 1;
+}
+
+.settings-item.github-login svg {
+    width: 24px;
+    height: 24px;
+    fill: #333;
+}
+
 .overlay {
     position: absolute;
     top: 0;
