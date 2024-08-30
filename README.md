@@ -127,3 +127,13 @@ You may serve it with a static server:
   npm install -g serve
   serve -s build
 ```
+
+### cloudflare pages和functions集成
+
+```
+npx wrangler pages download config 下载当前项目设置到wrangler.toml文件`
+```
+
+```
+npx wrangler pages dev
+```
