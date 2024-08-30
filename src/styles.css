@@ -44,6 +44,7 @@ header {
 .header-actions {
     display: flex;
     gap: 15px;
+    min-width: 24px;
 }
 .icon {
     width: 24px;
