@@ -344,10 +344,12 @@ header {
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
+    font-weight: 500;
 }
 
 .settings-item:hover {
-    color: #999;
+    color: #F9A9A7;
+
 }
 
 .settings-item:last-child {
@@ -369,9 +371,7 @@ a.settings-item {
     text-decoration: none;
 }
 
-a.settings-item:hover {
-    color: #999;
-}
+ 
 
 a.settings-item span {
     flex-grow: 1;
