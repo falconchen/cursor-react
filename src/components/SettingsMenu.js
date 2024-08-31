@@ -55,7 +55,7 @@ function SettingsMenu({ isOpen, onOverlayClick, isUserLoggedIn, onLogout }) {
                 <span>数据同步</span>
                 <input type="checkbox" />
               </div>
-              <a href="#" className="settings-item" onClick={handleLogout}>
+              <a href="/api/logout" className="settings-item" onClick={handleLogout}>
                 <span>退出登录</span>
               </a>
             </>

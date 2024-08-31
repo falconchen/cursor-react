@@ -1,15 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 
 function UserStatus({ onLoginStatusChange, onSettingsClick }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchUserInfo();
-  }, []);
-
-  const fetchUserInfo = async () => {
+  const fetchUserInfo = useCallback(async () => {
     try {
       const response = await fetch('/api/user');
       if (response.ok) {
@@ -27,7 +23,11 @@ function UserStatus({ onLoginStatusChange, onSettingsClick }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [onLoginStatusChange]);
+
+  useEffect(() => {
+    fetchUserInfo();
+  }, [fetchUserInfo]);
 
   const handleLogin = () => {
     window.location.href = '/auth/github';
