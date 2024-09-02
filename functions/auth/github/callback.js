@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 export async function onRequestGet(context) {
   const { searchParams } = new URL(context.request.url);
   const code = searchParams.get('code');
@@ -58,6 +60,7 @@ export async function onRequestGet(context) {
 
   // 存储用户信息到D1
   const platformUid = `github:${userData.id}`;
+  const userId = uuidv4();
   const db = context.env.GNDB;
   await db.prepare(`
     INSERT INTO users (id, platform_uid, name, avatar_url)
@@ -66,12 +69,12 @@ export async function onRequestGet(context) {
       name=excluded.name,
       avatar_url=excluded.avatar_url,
       last_login=CURRENT_TIMESTAMP
-  `).bind(userData.id, platformUid, userData.name, userData.avatar_url).run();
+  `).bind(userId, platformUid, userData.name, userData.avatar_url).run();
 
   // 生成session并存储到KV
   const sessionId = crypto.randomUUID();
   const sessionData = {
-    userId: userData.id,
+    userId,
     platformUid,
     name: userData.name,
     avatarUrl: userData.avatar_url,
