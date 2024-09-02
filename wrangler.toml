@@ -3,5 +3,14 @@ name = "cursor-react"
 pages_build_output_dir = "build"
 compatibility_date = "2024-08-30"
 
-[env]
-production = { }
+
+
+[[d1_databases]]
+binding = "GNDB" # Should match preview_database_id
+database_name = "geo-notes"
+database_id = "4467aa4c-35ba-42c4-bdb1-5d7320299f15" # wrangler d1 info YOUR_DATABASE_NAME
+preview_database_id = "GNDB" # Required for Pages local development
+
+[[kv_namespaces]]
+binding = "GNKV" # 绑定名称
+id = "0396dc1650024136895e5c75eb72981e" # KV命名空间ID

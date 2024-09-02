@@ -137,3 +137,40 @@ npx wrangler pages download config 下载当前项目设置到wrangler.toml文�
 ```
 npx wrangler pages dev
 ```
+
+### D1数据库
+
+wrangler.toml 配置
+```
+[[d1_databases]]
+binding = "DB" # Should match preview_database_id
+database_name = "geo-notes"
+database_id = "4467aa4c-35ba-42c4-bdb1-5d7320299f15" # wrangler d1 info YOUR_DATABASE_NAME
+preview_database_id = "DB" # 本地开发Pages所需
+```
+
+本地创建表
+
+```
+npx wrangler d1 execute geo-notes --local --file=./schema.sql
+```
+
+
+远程
+```
+npx wrangler d1 execute geo-notes --remote --file=./schema.sql
+```
+
+### KV
+
+wrangler.toml 配置
+```
+[[kv_namespaces]]
+binding = "KV" # 绑定名称 
+id = "0396dc1650024136895e5c75eb72981e" # KV命名空间ID
+```
+
+要在本地通过向 Wrangler CLI 传递参数来与 KV 命名空间绑定进行交互，请在 wrangler pages dev 命令中添加 -k <BINDING_NAME> 或 --kv=<BINDING_NAME>。例如，如果您的 KV 命名空间通过 TODO_LIST 绑定与函数绑定，请通过运行以下命令在本地开发中访问 KV 命名空间：
+
+
+npx wrangler pages dev <OUTPUT_DIR> --kv=TODO_LIST

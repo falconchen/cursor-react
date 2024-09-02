@@ -4,3 +4,4 @@ node_modules
 .dev.vars
 .wrangler
 logs
+functions/api/cf.js
