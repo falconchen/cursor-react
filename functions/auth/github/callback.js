@@ -1,5 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
-
 export async function onRequestGet(context) {
   const { searchParams } = new URL(context.request.url);
   const code = searchParams.get('code');
@@ -60,7 +58,7 @@ export async function onRequestGet(context) {
 
   // 存储用户信息到D1
   const platformUid = `github:${userData.id}`;
-  const userId = uuidv4();
+  const userId = crypto.randomUUID();
   const db = context.env.GNDB;
   await db.prepare(`
     INSERT INTO users (id, platform_uid, name, avatar_url)
