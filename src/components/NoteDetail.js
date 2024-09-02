@@ -180,9 +180,11 @@ function NoteDetail() {
     }
   };
 
-  const handleDragStart = (index) => {
+  const handleDragStart = (event, index) => {
     setDraggingIndex(index);
     setIsDragging(true);
+    // 添加 dragging 类
+    event.currentTarget.classList.add('dragging');
   };
 
   const handleDragOver = (e) => {
@@ -204,6 +206,8 @@ function NoteDetail() {
     console.log(`被操作图片的最终索引: ${finalIndex}`);
     setDraggingIndex(null);
     setIsDragging(false);
+    // 移除所有元素的 dragging 类
+    document.querySelectorAll('.image-container').forEach(el => el.classList.remove('dragging'));
   };
 
   const handleImageContainerClick = (image, index) => {
@@ -269,10 +273,10 @@ function NoteDetail() {
             {previewImages.map((image, index) => (
               <div
                 key={index}
-                className="image-container"
+                className={`image-container ${draggingIndex === index ? 'dragging' : ''}`}
                 onClick={() => handleImageContainerClick(image, index)}
                 draggable
-                onDragStart={() => handleDragStart(index)}
+                onDragStart={(event) => handleDragStart(event, index)}
                 onDragOver={handleDragOver}
                 onDrop={() => handleDrop(index)}
                 onDragEnd={() => handleDragEnd(index)}
@@ -281,7 +285,7 @@ function NoteDetail() {
                   src={image} 
                   alt={`预览图片 ${index + 1}`} 
                   className="preview-image" 
-                  draggable="false" // 添加这行
+                  draggable="false"
                 />
                 <div className="image-remove" onClick={(event) => {
                   event.stopPropagation();

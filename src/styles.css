@@ -201,6 +201,19 @@ header {
     overflow: visible;
 }
 
+.image-container:active {
+    cursor: grabbing;
+}
+
+.image-container:hover {
+    cursor: grab;
+}
+
+.image-container.dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+}
+
 .image-remove {
     position: absolute;
     top: -12px;
