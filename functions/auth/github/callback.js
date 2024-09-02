@@ -125,7 +125,7 @@ export async function onRequestGet(context) {
     <script>
       setTimeout(() => {
         window.location.href = '/';
-      }, 3000);
+      }, 2000);
     </script>
     </html>
   `, {

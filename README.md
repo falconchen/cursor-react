@@ -149,7 +149,7 @@ database_id = "4467aa4c-35ba-42c4-bdb1-5d7320299f15" # wrangler d1 info YOUR_DAT
 preview_database_id = "DB" # 本地开发Pages所需
 ```
 
-本地创建表
+本地创建表或更新表结构
 
 ```
 npx wrangler d1 execute geo-notes --local --file=./schema.sql
@@ -174,3 +174,7 @@ id = "0396dc1650024136895e5c75eb72981e" # KV命名空间ID
 
 
 npx wrangler pages dev <OUTPUT_DIR> --kv=TODO_LIST
+
+
+### D1和KV数据库存放在项目的位置
+`.wrangler/state`
