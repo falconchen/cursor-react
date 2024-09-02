@@ -24,7 +24,7 @@ function NoteDetail() {
       pitch: 0, // 俯仰度
       rotation: 0, // 旋转角度
       draggable: true, // 允许用户拖动地图
-      scrollwheel: true // 允许���使用滚缩放地图
+      scrollwheel: true // 允许���放地图
     });
 
     if ("geolocation" in navigator) {
@@ -250,7 +250,7 @@ function NoteDetail() {
             <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
           </svg>
           <span className="image-upload-text">上传图片（可选）</span>
-          <input type="file" id="imageUpload" accept="image/*" onChange={handleImageUpload} style={{display: 'none'}} />
+          <input type="file" id="imageUpload" accept="image/*" onChange={handleImageUpload} style={{display: 'none'}} multiple />
         </div>
         
         {previewImages.length > 0 && (
