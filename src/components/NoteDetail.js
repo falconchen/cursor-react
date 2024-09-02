@@ -11,7 +11,8 @@ function NoteDetail() {
   const imageUploadRef = useRef(null);
   const [previewImages, setPreviewImages] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [dragStart, setDragStart] = useState(null);
+  const [draggingIndex, setDraggingIndex] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   const initMap = useCallback(() => {
     if (!mapRef.current) return;
@@ -56,7 +57,7 @@ function NoteDetail() {
         "styleId": "marker",
         "position": newMap.getCenter(),
         "properties": {
-          "title": "当前位置"
+          "title": "当前置"
         }
       }]
     });
@@ -179,18 +180,36 @@ function NoteDetail() {
     }
   };
 
-  const handleDragStart = (event) => {
-    setDragStart(event.clientX);
+  const handleDragStart = (index) => {
+    setDraggingIndex(index);
+    setIsDragging(true);
   };
 
-  const handleDragEnd = (event) => {
-    const dragEnd = event.clientX;
-    if (dragEnd - dragStart > 50) {
-      handlePrevImage();
-    } else if (dragStart - dragEnd > 50) {
-      handleNextImage();
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (dropIndex) => {
+    if (draggingIndex === null) return;
+    
+    const newImages = [...previewImages];
+    const [reorderedItem] = newImages.splice(draggingIndex, 1);
+    newImages.splice(dropIndex, 0, reorderedItem);
+    
+    setPreviewImages(newImages);
+    handleDragEnd(dropIndex);
+  };
+
+  const handleDragEnd = (finalIndex) => {
+    console.log(`被操作图片的最终索引: ${finalIndex}`);
+    setDraggingIndex(null);
+    setIsDragging(false);
+  };
+
+  const handleImageContainerClick = (image, index) => {
+    if (!isDragging) {
+      handleImageClick(image, index);
     }
-    setDragStart(null);
   };
 
   const handleRemoveImage = (index) => {
@@ -251,9 +270,19 @@ function NoteDetail() {
               <div
                 key={index}
                 className="image-container"
-                onClick={() => handleImageClick(image, index)}
+                onClick={() => handleImageContainerClick(image, index)}
+                draggable
+                onDragStart={() => handleDragStart(index)}
+                onDragOver={handleDragOver}
+                onDrop={() => handleDrop(index)}
+                onDragEnd={() => handleDragEnd(index)}
               >
-                <img src={image} alt={`预览图片 ${index + 1}`} className="preview-image" />
+                <img 
+                  src={image} 
+                  alt={`预览图片 ${index + 1}`} 
+                  className="preview-image" 
+                  draggable="false" // 添加这行
+                />
                 <div className="image-remove" onClick={(event) => {
                   event.stopPropagation();
                   handleRemoveImage(index);
@@ -272,8 +301,7 @@ function NoteDetail() {
               alt="放大的图片"
               className="viewer-image"
               draggable="false"
-              onDragStart={handleDragStart}
-              onDragEnd={handleDragEnd}
+              onDragStart={() => {}} // 空函数，防止拖拽
               onClick={(event) => event.stopPropagation()}
             />
             {previewImages.length > 1 && (
