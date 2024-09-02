@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-// import markerIcon from '../images/markerDefault.png'; // 导入图片
 
 function NoteDetail() {
   const navigate = useNavigate();
@@ -10,7 +9,6 @@ function NoteDetail() {
   const [location, setLocation] = useState('正在获取位置...');
   const mapRef = useRef(null);
   const imageUploadRef = useRef(null);
-  // const [map, setMap] = useState(null);
   const [previewImages, setPreviewImages] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
   const [dragStart, setDragStart] = useState(null);
@@ -20,14 +18,14 @@ function NoteDetail() {
 
     const newMap = new window.TMap.Map(mapRef.current, {      
       center: new window.TMap.LatLng(39.984104, 116.307503),
-      zoom:15,   //设置地图缩放级别            
+      zoom: 15,   //设置地图缩放级别            
       pitch: 0, // 俯仰度
       rotation: 0, // 旋转角度
       draggable: true, // 允许用户拖动地图
-      scrollwheel: true // 允许���放地图
+      scrollwheel: true // 允许缩放地图
     });
 
-    if ("geolocation" in navigator) {
+    if (window.isSecureContext && "geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
@@ -40,7 +38,7 @@ function NoteDetail() {
         }
       );
     } else {
-      setLocation('不支持地理定位');
+      setLocation('不支持地理定位或不在安全上下文中');
     }
 
     // 添加标记
@@ -51,7 +49,6 @@ function NoteDetail() {
           "width": 25,
           "height": 35,
           "anchor": { x: 16, y: 32 },
-          // "src": markerIcon // 使用导入的本地图片
         })
       },
       geometries: [{
@@ -89,10 +86,6 @@ function NoteDetail() {
     const position = new window.TMap.LatLng(lat, lng);
     mapInstance.setCenter(position);
 
-    // 添加检查
-    // console.log('mapInstance 是 TMap.Map 的实例:', mapInstance instanceof window.TMap.Map);
-    // console.log('mapInstance:', mapInstance);
-
     new window.TMap.MultiMarker({
       map: mapInstance,
       styles: {
@@ -100,7 +93,6 @@ function NoteDetail() {
           "width": 25,
           "height": 35,
           "anchor": { x: 16, y: 32 },
-          // "src": markerIcon // 使用导入的本地图片
         })
       },
       geometries: [{

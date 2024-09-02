@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
-
 function UserStatus({ onLoginStatusChange, onSettingsClick }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);

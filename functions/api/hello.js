@@ -10,10 +10,12 @@ export async function onRequest(context) {
     return new Response('GNDB 未配置', { status: 500 });
   }
 
+  const id = crypto.randomUUID();
+
   const db = context.env.GNDB;
   // 修改插入代码以匹配 users 表的结构
-  const result = await db.prepare('INSERT INTO users (github_id, google_id, name, avatar_url) VALUES (?, ?, ?, ?)')
-                         .bind('github321', 'google323', 'John', 'https://example.com/avatar.jpg')
+  const result = await db.prepare('INSERT INTO users (id, platform_uid, name, avatar_url, created_at, last_login) VALUES (?, ?, ?, ?,  CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)')
+                         .bind(id, `github:${crypto.randomUUID()}`,  'John', 'https://example.com/avatar.jpg') 
                          .run();
 
   if (result.success) {
