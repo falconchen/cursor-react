@@ -151,7 +151,7 @@ function NoteDetail() {
       content: content,
       location_note: location_note,
       location: `${latitude.toFixed(6)},${longitude.toFixed(6)}`,
-      images: previewImages,
+      images: previewImages, // 发送 base64 图片数据
       is_deleted: false,
       // 可以添加其他需要保存的数据
     };

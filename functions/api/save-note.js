@@ -40,6 +40,18 @@ export async function onRequestPost(context) {
       });
     }
 
+    // 将图片上传到 R2
+    const imageUrls = [];
+    for (const image of noteData.images) {
+      const imageName = `${crypto.randomUUID()}.${image.split(';')[0].split('/')[1]}`;
+      const imageData = image.split(',')[1];
+      const imageBytes = Uint8Array.from(Buffer.from(imageData, 'base64'));
+      await context.env.IMAGES_BUCKET.put(imageName, imageBytes, {
+        httpMetadata: { contentType: image.split(';')[0].split(':')[1] },
+      });
+      imageUrls.push(`https://pub-6f7f8e7a34d240d5b7a5e60c0173fa55.r2.dev/${imageName}`);
+    }
+
     // 准备SQL语句
     const sql = `
       INSERT INTO notes (id, user_id, content, location_note, location, images, is_deleted, created_at, updated_at)
@@ -54,7 +66,7 @@ export async function onRequestPost(context) {
       noteData.content,
       noteData.location_note,
       noteData.location,
-      JSON.stringify(noteData.images), // 将图片数组转换为JSON字符串
+      JSON.stringify(imageUrls), // 存储图片URL数组
       noteData.is_deleted
     ];
     console.log("SQL参数:", JSON.stringify(params, null, 2));

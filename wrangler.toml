@@ -14,3 +14,8 @@ preview_database_id = "GNDB" # Required for Pages local development
 [[kv_namespaces]]
 binding = "GNKV" # 绑定名称
 id = "0396dc1650024136895e5c75eb72981e" # KV命名空间ID
+
+[[r2_buckets]]
+binding = "IMAGES_BUCKET"
+bucket_name = "geo-notes"
+preview_bucket_name = "geo-notes"  # 用于开发环境
