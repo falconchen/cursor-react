@@ -6,17 +6,22 @@ function UserStatus({ onLoginStatusChange, onSettingsClick }) {
 
   const fetchUserInfo = useCallback(async () => {
     try {
-      const response = await fetch('/api/user');
+      const response = await fetch('/api/check-login');
       if (response.ok) {
         const userData = await response.json();
-        setUser(userData);
-        onLoginStatusChange(true);
+        if (userData.isLoggedIn) {
+          setUser(userData);
+          onLoginStatusChange(true);
+        } else {
+          setUser(null);
+          onLoginStatusChange(false);
+        }
       } else {
         setUser(null);
         onLoginStatusChange(false);
       }
     } catch (error) {
-      console.error('Error fetching user info:', error);
+      console.error('获取用户信息时出错:', error);
       setUser(null);
       onLoginStatusChange(false);
     } finally {

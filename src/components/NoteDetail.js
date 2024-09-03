@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { checkLoginStatus } from '../utils/auth'; // 假设我们有一个 auth 工具函数来检查登录状态
+import { saveNoteToD1, saveNoteToIndexedDB } from '../utils/noteStorage'; // 假设我们有一个 noteStorage 工具函数来处理存储
 
 function NoteDetail() {
   const navigate = useNavigate();
@@ -13,6 +15,7 @@ function NoteDetail() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [draggingIndex, setDraggingIndex] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const initMap = useCallback(() => {
     if (!mapRef.current) return;
@@ -83,6 +86,11 @@ function NoteDetail() {
     }
   }, [initMap]);
 
+  useEffect(() => {
+    // 检查用户登录状态
+    checkLoginStatus().then(status => setIsLoggedIn(status));
+  }, []);
+
   const updateMapPosition = (mapInstance, lat, lng) => {
     const position = new window.TMap.LatLng(lat, lng);
     mapInstance.setCenter(position);
@@ -118,9 +126,27 @@ function NoteDetail() {
     }
   };
 
-  const handleSave = () => {
-    alert(`笔记已保存${locationNote ? '，地点备注：' + locationNote : ''}`);
-    navigate('/');
+  const handleSave = async () => {
+    const noteData = {
+      content: note,
+      locationNote,
+      location,
+      images: previewImages,
+      // 可以添加其他需要保存的数据
+    };
+
+    try {
+      if (isLoggedIn) {
+        await saveNoteToD1(noteData);
+      } else {
+        await saveNoteToIndexedDB(noteData);
+      }
+      alert('笔记已保存');
+      navigate('/');
+    } catch (error) {
+      console.error('保存笔记时出错:', error);
+      alert('保存笔记失败，请重试');
+    }
   };
 
   const handleImageUpload = (event) => {
