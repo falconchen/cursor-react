@@ -49,6 +49,9 @@ export async function onRequestPost(context) {
       await context.env.IMAGES_BUCKET.put(imageName, imageBytes, {
         httpMetadata: { contentType: image.split(';')[0].split(':')[1] },
       });
+      console.log("R2_IMAGES_URL_PREFIX:", `${context.env.R2_IMAGES_URL_PREFIX}`);
+      console.log("R2_IMAGES_URL_PREFIX_replace:", `${context.env.R2_IMAGES_URL_PREFIX.replace(/\/$/, '')}`);
+
       imageUrls.push(`${context.env.R2_IMAGES_URL_PREFIX.replace(/\/$/, '')}/${imageName}`);
     }
 
