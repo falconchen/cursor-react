@@ -19,3 +19,4 @@ node_modules
 logs
 functions/api/cf.js
 chat
+/html/

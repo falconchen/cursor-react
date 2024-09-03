@@ -33,7 +33,7 @@ function NoteDetail() {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          setLocation(`纬度: ${latitude.toFixed(6)}, 经度: ${longitude.toFixed(6)}`);
+          setLocation(`位置: ${latitude.toFixed(6)},${longitude.toFixed(6)}`);
           updateMapPosition(newMap, latitude, longitude);
         },
         (error) => {
@@ -69,7 +69,7 @@ function NoteDetail() {
     marker.on("dragend", (e) => {
       const position = e.geometry.position;
       newMap.setCenter(position);
-      setLocation(`纬度: ${position.lat.toFixed(6)}, 经度: ${position.lng.toFixed(6)}`);
+      setLocation(`位置: ${position.lat.toFixed(6)},${position.lng.toFixed(6)}`);
     });
 
   }, []);
@@ -127,8 +127,25 @@ function NoteDetail() {
   };
 
   const handleSave = async () => {
-    const [latitude, longitude] = location.split(':')[1].trim().split(',').map(coord => parseFloat(coord.trim()));
-    
+    let latitude, longitude;
+
+    // 更健壮的位置信息解析
+    const locationParts = location.split(':');
+    if (locationParts.length > 1) {
+      const coords = locationParts[1].trim().split(',');
+      if (coords.length === 2) {
+        latitude = parseFloat(coords[0].trim());
+        longitude = parseFloat(coords[1].trim());
+      }
+    }
+
+    // 检查是否成功解析了有效的经纬度
+    if (isNaN(latitude) || isNaN(longitude)) {
+      console.error('无法解析有效的经纬度:', location);
+      alert('位置信息无效,无法保存笔记');
+      return;
+    }
+
     const noteData = {
       id: crypto.randomUUID(),
       content: content,
