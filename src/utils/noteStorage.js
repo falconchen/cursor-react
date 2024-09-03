@@ -1,8 +1,8 @@
+let db;
 const DB_NAME = 'GeoNotesDB';
 const DB_VERSION = 1;
 const STORE_NAME = 'notes';
 
-let db;
 async function initDB() {
   if (!db) {
     db = await openDatabase();
@@ -29,10 +29,10 @@ export async function saveNoteToIndexedDB(noteData) {
     const database = await initDB();
     
     return new Promise((resolve, reject) => {
-      if (!database.objectStoreNames.contains(STORE_NAME)) {
-        reject(new Error(`对象存储 '${STORE_NAME}' 不存在`));
-        return;
-      }
+      // if (!database.objectStoreNames.contains(STORE_NAME)) {
+      //   reject(new Error(`对象存储 '${STORE_NAME}' 不存在`));
+      //   return;
+      // }
       const transaction = database.transaction([STORE_NAME], 'readwrite');
       const store = transaction.objectStore(STORE_NAME);
 
@@ -54,14 +54,12 @@ export async function saveNoteToIndexedDB(noteData) {
       console.log('数据库或对象存储不存在，尝试重置数据库');
       await resetDatabase();
       await initDB();
-      // 重试同步过程
-      await saveNoteToIndexedDB();
-    }else{
+      // 重试保存过程
+      return saveNoteToIndexedDB(noteData);
+    } else {
       throw error;
     }
-
   }
-  
 }
 
 function openDatabase() {
@@ -70,7 +68,10 @@ function openDatabase() {
 
     request.onerror = () => reject('打开数据库失败');
 
-    request.onsuccess = (event) => resolve(event.target.result);
+    request.onsuccess = (event) => {
+      db = event.target.result;
+      resolve(db);
+    };
 
     request.onupgradeneeded = (event) => {
       const db = event.target.result;
@@ -80,8 +81,6 @@ function openDatabase() {
     };
   });
 }
-
-
 
 async function resetDatabase() {
   if (db) {
