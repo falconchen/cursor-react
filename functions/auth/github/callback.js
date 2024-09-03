@@ -58,16 +58,29 @@ export async function onRequestGet(context) {
 
   // 存储用户信息到D1
   const platformUid = `github:${userData.id}`;
-  const userId = crypto.randomUUID();
   const db = context.env.GNDB;
-  await db.prepare(`
-    INSERT INTO users (id, platform_uid, name, avatar_url)
-    VALUES (?, ?, ?, ?)
-    ON CONFLICT(platform_uid) DO UPDATE SET
-      name=excluded.name,
-      avatar_url=excluded.avatar_url,
-      last_login=CURRENT_TIMESTAMP
-  `).bind(userId, platformUid, userData.name, userData.avatar_url).run();
+
+  // 首先,检查用户是否已存在
+  const existingUser = await db.prepare('SELECT id FROM users WHERE platform_uid = ?').bind(platformUid).first();
+  
+  let userId;
+  if (existingUser) {
+    // 如果用户已存在,使用现有的 ID
+    userId = existingUser.id;
+    // 更新用户信息
+    await db.prepare(`
+      UPDATE users
+      SET name = ?, avatar_url = ?, last_login = CURRENT_TIMESTAMP
+      WHERE id = ?
+    `).bind(userData.name, userData.avatar_url, userId).run();
+  } else {
+    // 如果用户不存在,创建新用户
+    userId = crypto.randomUUID();
+    await db.prepare(`
+      INSERT INTO users (id, platform_uid, name, avatar_url)
+      VALUES (?, ?, ?, ?)
+    `).bind(userId, platformUid, userData.name, userData.avatar_url).run();
+  }
 
   // 生成session并存储到KV
   const sessionId = crypto.randomUUID();
