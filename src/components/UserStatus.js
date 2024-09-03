@@ -13,7 +13,7 @@ function UserStatus({ onLoginStatusChange, onSettingsClick }) {
         if (userData.isLoggedIn) {
           setUser(userData);
           onLoginStatusChange(true);
-          await syncNotesWithServer(); // 新添加的同步函数
+          // await syncNotesWithServer(); // 新添加的同步函数
         } else {
           setUser(null);
           onLoginStatusChange(false);
