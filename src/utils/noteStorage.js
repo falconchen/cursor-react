@@ -23,7 +23,14 @@ export async function saveNoteToIndexedDB(noteData) {
       const transaction = db.transaction(['notes'], 'readwrite');
       const store = transaction.objectStore('notes');
 
-      const addRequest = store.add(noteData);
+      const noteWithTimestamp = {
+        ...noteData,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        is_deleted: false
+      };
+
+      const addRequest = store.add(noteWithTimestamp);
 
       addRequest.onerror = (event) => reject('添加数据失败');
       addRequest.onsuccess = (event) => resolve();
@@ -31,7 +38,7 @@ export async function saveNoteToIndexedDB(noteData) {
 
     request.onupgradeneeded = (event) => {
       const db = event.target.result;
-      db.createObjectStore('notes', { keyPath: 'id', autoIncrement: true });
+      db.createObjectStore('notes', { keyPath: 'id' });
     };
   });
 }

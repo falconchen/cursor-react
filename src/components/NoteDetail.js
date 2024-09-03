@@ -6,8 +6,8 @@ import { saveNoteToD1, saveNoteToIndexedDB } from '../utils/noteStorage'; // 假
 function NoteDetail() {
   const navigate = useNavigate();
   const { mode } = useParams();
-  const [note, setNote] = useState('');
-  const [locationNote, setLocationNote] = useState('');
+  const [content, setContent] = useState('');
+  const [location_note, setLocationNote] = useState('');
   const [location, setLocation] = useState('正在获取位置...');
   const mapRef = useRef(null);
   const imageUploadRef = useRef(null);
@@ -127,11 +127,15 @@ function NoteDetail() {
   };
 
   const handleSave = async () => {
+    const [latitude, longitude] = location.split(':')[1].trim().split(',').map(coord => parseFloat(coord.trim()));
+    
     const noteData = {
-      content: note,
-      locationNote,
-      location,
+      id: crypto.randomUUID(),
+      content: content,
+      location_note: location_note,
+      location: `${latitude.toFixed(6)},${longitude.toFixed(6)}`,
       images: previewImages,
+      is_deleted: false,
       // 可以添加其他需要保存的数据
     };
 
@@ -280,8 +284,8 @@ function NoteDetail() {
           <textarea 
             className="edit-textarea" 
             placeholder="输入笔记内容"
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
           />
         </div>
         
@@ -357,7 +361,7 @@ function NoteDetail() {
             type="text" 
             className="location-note-input" 
             placeholder="地点备注（可选）" 
-            value={locationNote}
+            value={location_note}
             onChange={(e) => setLocationNote(e.target.value)}
           />
           <div id="map" ref={mapRef} style={{ height: '300px', width: '100%' }}></div>

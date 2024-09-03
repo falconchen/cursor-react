@@ -18,3 +18,4 @@ node_modules
 .wrangler
 logs
 functions/api/cf.js
+chat
