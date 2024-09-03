@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { syncNotesWithServer } from '../utils/syncNotes';
+// import { syncNotesWithServer } from '../utils/syncNotes';
 
 function UserStatus({ onLoginStatusChange, onSettingsClick }) {
   const [user, setUser] = useState(null);
