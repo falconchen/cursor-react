@@ -6,6 +6,7 @@ function UserStatus({ onLoginStatusChange, onSettingsClick }) {
   const [loading, setLoading] = useState(true);
 
   const fetchUserInfo = useCallback(async () => {
+    
     try {
       const response = await fetch('/api/check-login');
       if (response.ok) {
