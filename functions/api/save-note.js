@@ -45,7 +45,7 @@ export async function onRequestPost(context) {
     for (const image of noteData.images) {
       const imageName = `${crypto.randomUUID()}.${image.split(';')[0].split('/')[1]}`;
       const imageData = image.split(',')[1];
-      const imageBytes = Uint8Array.from(Buffer.from(imageData, 'base64'));
+      const imageBytes = new Uint8Array(atob(imageData).split('').map(char => char.charCodeAt(0)));
       await context.env.IMAGES_BUCKET.put(imageName, imageBytes, {
         httpMetadata: { contentType: image.split(';')[0].split(':')[1] },
       });

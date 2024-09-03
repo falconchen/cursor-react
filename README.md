@@ -178,3 +178,12 @@ npx wrangler pages dev <OUTPUT_DIR> --kv=TODO_LIST
 
 ### D1和KV数据库存放在项目的位置
 `.wrangler/state`
+
+
+### Functions线上日志
+
+查看地址：<https://dash.cloudflare.com/c26825851fc0ddfe08ec8330213454ac/pages/view/cursor-react/765ed9ce-a834-4ae2-a922-634ed50df439/functions>
+
+实时日志->开启日志流
+
+![](https://photo.cellmean.com/i/2024/09/04/v5qhj-0.png)  
