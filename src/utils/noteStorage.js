@@ -1,3 +1,7 @@
+const DB_NAME = 'GeoNotesDB';
+const DB_VERSION = 1;
+const STORE_NAME = 'notes';
+
 export async function saveNoteToD1(noteData) {
   const response = await fetch('/api/save-note', {
     method: 'POST',
@@ -13,32 +17,38 @@ export async function saveNoteToD1(noteData) {
 }
 
 export async function saveNoteToIndexedDB(noteData) {
+  const db = await openDatabase();
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open('GeoNotesDB', 1);
+    const transaction = db.transaction([STORE_NAME], 'readwrite');
+    const store = transaction.objectStore(STORE_NAME);
 
-    request.onerror = (event) => reject('打开数据库失败');
-
-    request.onsuccess = (event) => {
-      const db = event.target.result;
-      const transaction = db.transaction(['notes'], 'readwrite');
-      const store = transaction.objectStore('notes');
-
-      const noteWithTimestamp = {
-        ...noteData,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        is_deleted: false
-      };
-
-      const addRequest = store.add(noteWithTimestamp);
-
-      addRequest.onerror = (event) => reject('添加数据失败');
-      addRequest.onsuccess = (event) => resolve();
+    const noteWithTimestamp = {
+      ...noteData,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      is_deleted: false
     };
+
+    const addRequest = store.add(noteWithTimestamp);
+
+    addRequest.onerror = () => reject('添加数据失败');
+    addRequest.onsuccess = () => resolve();
+  });
+}
+
+function openDatabase() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+    request.onerror = () => reject('打开数据库失败');
+
+    request.onsuccess = (event) => resolve(event.target.result);
 
     request.onupgradeneeded = (event) => {
       const db = event.target.result;
-      db.createObjectStore('notes', { keyPath: 'id' });
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+      }
     };
   });
 }
