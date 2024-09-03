@@ -49,7 +49,7 @@ export async function onRequestPost(context) {
       await context.env.IMAGES_BUCKET.put(imageName, imageBytes, {
         httpMetadata: { contentType: image.split(';')[0].split(':')[1] },
       });
-      imageUrls.push(`https://pub-6f7f8e7a34d240d5b7a5e60c0173fa55.r2.dev/${imageName}`);
+      imageUrls.push(`${context.env.R2_IMAGES_URL_PREFIX.replace(/\/$/, '')}/${imageName}`);
     }
 
     // 准备SQL语句
