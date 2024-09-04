@@ -485,3 +485,18 @@ a.settings-item span {
 .login-button span {
   line-height: 1;
 }
+
+.note-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 4px;
+  overflow: hidden;
+  flex-shrink: 0;
+  margin-left: 10px;
+}
+
+.note-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
