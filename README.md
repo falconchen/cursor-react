@@ -187,3 +187,27 @@ npx wrangler pages dev <OUTPUT_DIR> --kv=TODO_LIST
 实时日志->开启日志流
 
 ![](https://photo.cellmean.com/i/2024/09/04/v5qhj-0.png)  
+
+
+### 【本地开发】反代API路径
+
+将本地的API代理到后端服务器 wrangler pages dev
+
+这样访问本地的API，实际访问的是后端服务器 
+<http://localhost:3001/api/check-login> 实际访问的是 <http://localhost:8788/api/check-login>
+
+在 `src/setupProxy.js` 中配置代理
+
+``` js
+const { createProxyMiddleware } = require('http-proxy-middleware');
+
+module.exports = function(app) {
+  app.use(
+    ['/api', '/auth'],
+    createProxyMiddleware({
+      target: 'http://localhost:8788', // 修改为后端服务器wrangler pages dev 的地址
+      changeOrigin: true,
+    })
+  );
+};
+```
