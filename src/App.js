@@ -4,6 +4,7 @@ import Header from './components/Header';
 import NoteList from './components/NoteList';
 import AddButton from './components/AddButton';
 import NoteDetail from './components/NoteDetail';
+import NoteView from './components/NoteView';
 
 function App() {
   return (
@@ -14,11 +15,13 @@ function App() {
             <>
               <Header />
               <NoteList />
-              <AddButton />
             </>
           } />
           <Route path="/detail/:mode" element={<NoteDetail />} />
+          <Route path="/detail/edit/:id" element={<NoteDetail />} />
+          <Route path="/note/:id" element={<NoteView />} />
         </Routes>
+        <AddButton />
       </div>
     </Router>
   );

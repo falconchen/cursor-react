@@ -5,7 +5,7 @@ function NoteItem({ note }) {
   const navigate = useNavigate();
   
   const handleClick = () => {
-    navigate(`/detail/${note.id}`);
+    navigate(`/note/${note.id}`); // 修改为跳转到笔记详情页
   };
 
   return (
